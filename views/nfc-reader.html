@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Escanear NFC</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #scanButton, #stopScanButton { margin: 5px; }
+    #scanResult, #lastError { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>Scan NFC tag</h2>
+
+  <div>
+    <button id="scanButton">📶 Scan</button>
+    <button id="stopScanButton" disabled>🛑 Cancel</button>
+  </div>
+
+  <div>
+    <input type="checkbox" id="showSerialNumber" />
+    <label for="showSerialNumber">Show serial number</label>
+  </div>
+
+  <div id="scanResult"></div>
+  <div id="lastError" style="color: red;"></div>
+
+  <script>
+    let reader;
+    let abortController;
+
+    function logError(message) {
+      document.getElementById('lastError').textContent = message;
+    }
+
+    function logResult(message) {
+      document.getElementById('scanResult').textContent = message;
+    }
+
+    function disableButtons(scanDisabled, stopDisabled) {
+      document.getElementById('scanButton').disabled = scanDisabled;
+      document.getElementById('stopScanButton').disabled = stopDisabled;
+    }
+
+    async function scanTag() {
+      if (!('NDEFReader' in window)) {
+        logError("Este dispositivo o navegador no soporta NFC.");
+        disableButtons(true, true);
+        return;
+      }
+
+      reader = new NDEFReader();
+      abortController = new AbortController();
+
+      reader.onreadingerror = (event) => {
+        logError("Error al leer la etiqueta NFC.");
+      };
+
+      reader.onreading = (event) => {
+        const decoder = new TextDecoder();
+        let result = '';
+
+        if (document.getElementById('showSerialNumber').checked) {
+          result += `Serial: ${event.serialNumber}\n`;
+        }
+
+        for (const record of event.message.records) {
+          if (record.recordType === "text") {
+            const text = decoder.decode(record.data);
+            result += `Texto: ${text}`;
+            // Enviar el valor al plugin principal
+            if (window.opener) {
+              window.opener.postMessage({ method: "nfcScanned", value: text }, "*");
+              window.close();
+            }
+          }
+        }
+
+        logResult(result);
+      };
+
+      try {
+        await reader.scan({ signal: abortController.signal });
+        logResult("Escaneando... Acerca una etiqueta NFC.");
+        disableButtons(true, false);
+      } catch (error) {
+        logError("No se pudo iniciar el escaneo NFC. Asegúrate de que NFC esté activado y permitido en el navegador.");
+        disableButtons(false, true);
+      }
+    }
+
+    function abortScan() {
+      if (abortController) {
+        abortController.abort();
+        logResult("Escaneo cancelado.");
+        disableButtons(false, true);
+      }
+    }
+
+    document.getElementById('scanButton').addEventListener('click', scanTag);
+    document.getElementById('stopScanButton').addEventListener('click', abortScan);
+  </script>
+
+</body>
+</html>

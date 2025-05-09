@@ -1,18 +1,190 @@
+<button id="nfcScan" type="button" class="button">📶 NFC</button>
 <!DOCTYPE html>
-<html>
+<html manifest="manifest.appcache">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Base Instalada</title>
+	
+	<link rel="stylesheet" href="plugin.css">
+	<script src="jquery.min.js"></script>
+	
+	<script src="assetSelection.js"></script>
+	<script>
+		(function($){
+			$(document).ready(function(){
+				var plugin = new AssetSelection(true);
+				plugin.init();
+			});
+		})(jQuery);		
+	</script>
+</head>
+<body class="themeredwood">
+	<div class="redwood-container">
+		<div id="content" class="context-layout">	
+			<div id="inventoryContainer" class="card layout-content first-container" style="display:none">
+				<div class="context-layout">
+					<div class="wrapper wrapper-filter">
+						<div class="filter-titles searchText">
+							<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e; padding-right:5px" title="inventoryType">Inventory Type</h2>
+						</div>
+						<div class="text_box">
+							<div class="text_field">
+							  <input type="text" class="input" id="inventoryType" disabled hidden>
+							  <select id='inventoryTypesList' class="filter" disabled></select>
+							</div>
+						</div>
+					</div>
+					<div class="wrapper wrapper-filter">
+						<div class="filter-titles searchText">
+							<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e; padding-right:5px" title="itemNumber">Item Number</h2>
+						</div>
+						<div class="text_box">
+							<div class="text_field">
+							  <input type="text" class="input" id="itemNumber"  disabled>
+							</div>
+						</div>
+					</div>
+					<div class="wrapper wrapper-filter ">
+						<div class="filter-titles searchText">
+							<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e; padding-right:5px" title="quantity">Quantity</h2>
+						</div>
+						<div class="text_box">
+							<div class="text_field">
+							  <input type="text" class="input" id="quantity" value="1" disabled>
+							</div>
+						</div>
+					</div>
+					<div class="wrapper wrapper-filter">
+						<div class="filter-titles searchText">
+							<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e; padding-right:5px" title="serialNumber">Serial Number</h2>
+						</div>
+						<div class="text_box">
+							<div class="text_field">
+							  <input type="text" class="input" id="serialNumber" disabled>
+							</div>
+						</div>
+					</div>								
+				</div>
+			</div>
 
-   <head>
-      <title>Backend Challenges | Free Code Camp</title>
-      <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon"/>
-      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-      <link href="/public/style.css" rel="stylesheet" type="text/css">
-   </head>
-
-   <body>
-      <div class="container">
-         <h1>Manage Node.js projects and npm packages using package.json</h1>
-         <h3>Part 1 of Free Code Camp Backend Challenges</h3>
-      </div>
-   </body>
-
+			<div id="searchContainer" class="card layout-content first-container">
+				<div class="context-layout">
+					<div class="card wrapper wrapper-filter">
+						<div class="filter-titles searchText">
+								<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e; padding-right:5px" title="Search" id="searchAssetLabel">Buscar Numero Activo </h2>
+						</div>
+						<div class="text_box">
+							<div class="text_field">
+							  <input type="text" class="input" placeholder="Asset number" id="searchAsset">
+							</div>
+							<button id="launchNFCScan" class="button">📶 NFC</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card" id="resourceArea">
+				<header class="page-header" data-ofsc-role="page-header" aria-label="Page Header" style="">
+					<div class="page-context" style="">
+						<table width="100%">
+							<tr>
+								<td id="resourceHeading">
+									<h2 class="page-header-title" style="display: inline;" data-bind="text: title, attr: { title: title }" data-ofsc-role="page-title-text" title="Asset Selection" id="assetsListTag">Assets to select</h2>
+								</td>									
+							</tr>
+						</table>
+					</div>
+				</header>
+				<div class="activity-details-area context-card">
+					<table class="property_table" style="table-layout: fixed;" width="100%">
+						<tbody>
+							<tr>
+								<td id="assetDetails" class="resource-details">
+							
+									<div class="context-layout content-layout">
+										<!-- <div class="card wrapper wrapper-filter"> -->
+											<div id="assetsHeading">
+												<div class="filter-titles selectSlNo" id="selectSlNoDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="asse">Select</h2>
+												</div>
+												<div class="filter-titles" id="assetNoDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="assetNo">Numero Activo</h2>
+												</div>
+												<!--
+												<div class="filter-titles" id="assetDesDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="iDesc">Asset Description</h2>
+												</div>
+												-->
+												<div class="filter-titles" id="itemNoDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="itemNo">Item </h2>
+												</div>
+												<div class="filter-titles" id="serialNoDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="serialNo">Numero Serie </h2>
+												</div>
+												<!--
+												<div class="filter-titles" id="parentAssetDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="parentAssetNo">Parent Asset</h2>
+												</div>
+												-->
+												<div class="filter-titles des" id="assetDesDiv">
+													<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="iDesc">Descripcion</h2>
+												</div>
+											</div>
+											<div id="assetsList">
+												<div id="div1">
+													<div class="filter-titles selectSlNo">
+														<h2 class="page-header-title" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="asset"><input type="checkbox" class="selectAsset" id="asset_1"></h2>
+													</div>
+													<div class="filter-titles">
+														<h2 class="page-header-title assetNo" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="assetNo">AssetNumber3</h2>
+													</div>
+													<div class="filter-titles">
+														<h2 class="page-header-title iDesc" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="iDesc">AssetDescription</h2>
+													</div>
+													<div class="filter-titles">
+														<h2 class="page-header-title itemNo" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="itemNo">itemNumber</h2>
+													</div>													
+													<div class="filter-titles">
+														<h2 class="page-header-title serialNo" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="serialNo">SerialNumber3</h2>
+													</div>
+													<div class="filter-titles">
+														<h2 class="page-header-title parentAssetNo" style="display: inline;padding-left: 9px;font-size: 14px;font-family: 'Oracle Sans Semi'!important; font-weight: 700!important; color: #70706e;" title="parentAssetNo">ParentAsset1</h2>
+													</div>
+												</div>
+											</div>
+										<!-- </div> -->
+									</div>
+							
+							
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="popupAlert_Page" class="popupAlert_Page">
+				<div id="alertLight" class="white_content">
+					<header>
+						<h2 class="page-header-title" title="Asset Selection">Asset Selection</h2>
+					</header>
+					<div id="alertContentDiv" class="crewLeadD">
+						<div class="popupDiv searchFieldLabel" id="alertContent">Processing your request. Please wait...</Div>
+					</div>
+					<div id="alertDismissDiv" style="text-align: center;" hidden>
+						<button id="closeAlert" type="button" class="button dismiss" name="closeAlert">Dismiss</button>
+					</div>
+				</div>
+				<div id="alertFade" class="black_overlay"></div>	
+			</div>
+			<div class="card submit-line context-layout">
+				<div class="submit-line-links">
+					<button id="cancelOperation" type="button" class="button dismiss" name="cancelOperation"> Dismiss </button>
+					<button id="saveAsset" type="submit" class="button submit disabled" name="saveAsset"> Save </button>
+				</div>	
+			</div>
+		</div>
+	</div>
+</body>	
 </html>
